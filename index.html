@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="An Dang - frontend architecture, web performance, and user experience."
+    />
+    <meta name="theme-color" content="#050403" />
+    <title>An Dang</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #050403;
+        --bg-soft: #0c0904;
+        --text: #f5efe1;
+        --muted: #9d927a;
+        --gold: #f7c948;
+        --gold-deep: #9f6b13;
+        --line: rgba(247, 201, 72, 0.18);
+        --spot-x: 50vw;
+        --spot-y: 48vh;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+        margin: 0;
+      }
+
+      body {
+        min-height: 100vh;
+        overflow-x: hidden;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+      }
+
+      body::before,
+      body::after {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        content: "";
+      }
+
+      body::before {
+        background:
+          radial-gradient(circle at var(--spot-x) var(--spot-y), rgba(247, 201, 72, 0.24), transparent 18rem),
+          radial-gradient(circle at 82% 18%, rgba(159, 107, 19, 0.24), transparent 24rem),
+          radial-gradient(circle at 8% 88%, rgba(247, 201, 72, 0.12), transparent 20rem),
+          linear-gradient(145deg, #050403 0%, #0b0804 48%, #020202 100%);
+      }
+
+      body::after {
+        opacity: 0.34;
+        background-image:
+          linear-gradient(rgba(247, 201, 72, 0.06) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(247, 201, 72, 0.045) 1px, transparent 1px);
+        background-size: 54px 54px;
+        mask-image: radial-gradient(circle at center, black, transparent 74%);
+      }
+
+      .grain {
+        position: fixed;
+        inset: -40%;
+        z-index: 1;
+        pointer-events: none;
+        opacity: 0.13;
+        background-image:
+          radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.8) 0 1px, transparent 1px),
+          radial-gradient(circle at 70% 60%, rgba(255, 255, 255, 0.6) 0 1px, transparent 1px);
+        background-size: 44px 44px, 31px 31px;
+        animation: grain 9s steps(6) infinite;
+      }
+
+      .ribbon {
+        position: fixed;
+        inset: auto -12vw 7vh -12vw;
+        z-index: 1;
+        height: 42vh;
+        pointer-events: none;
+        opacity: 0.42;
+        filter: blur(18px);
+      }
+
+      .ribbon span {
+        position: absolute;
+        left: 0;
+        width: 130%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        transform-origin: center;
+        animation: thread 8s ease-in-out infinite alternate;
+      }
+
+      .ribbon span:nth-child(1) {
+        top: 18%;
+        transform: rotate(-8deg);
+      }
+
+      .ribbon span:nth-child(2) {
+        top: 42%;
+        animation-delay: -2s;
+        transform: rotate(4deg);
+      }
+
+      .ribbon span:nth-child(3) {
+        top: 66%;
+        animation-delay: -4s;
+        transform: rotate(-3deg);
+      }
+
+      .wrap {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        min-height: 100vh;
+        place-items: center start;
+        width: min(100% - 2rem, 48rem);
+        margin: 0 auto;
+        padding: 5.5rem 0;
+      }
+
+      .mark {
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        z-index: 3;
+        display: grid;
+        width: 2.75rem;
+        height: 2.75rem;
+        place-items: center;
+        border: 1px solid var(--line);
+        border-radius: 50%;
+        color: var(--gold);
+        text-decoration: none;
+        transition:
+          border-color 180ms ease,
+          color 180ms ease,
+          transform 180ms ease;
+      }
+
+      .mark:hover,
+      .mark:focus-visible {
+        border-color: rgba(247, 201, 72, 0.72);
+        color: #ffe58a;
+        outline: none;
+        transform: rotate(-8deg) scale(1.04);
+      }
+
+      .mark svg {
+        width: 1.35rem;
+      }
+
+      header {
+        margin-bottom: 1.8rem;
+      }
+
+      .kicker,
+      .links,
+      .status {
+        font-family:
+          "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .kicker {
+        margin: 0 0 0.7rem;
+        color: var(--gold);
+      }
+
+      h1 {
+        max-width: 11ch;
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(3.4rem, 11vw, 8.8rem);
+        font-weight: 400;
+        line-height: 0.86;
+        letter-spacing: 0;
+      }
+
+      .role {
+        margin: 0.9rem 0 0;
+        color: var(--muted);
+      }
+
+      main {
+        max-width: 42rem;
+      }
+
+      p {
+        margin: 0 0 1rem;
+        color: rgba(245, 239, 225, 0.86);
+        font-size: clamp(1.02rem, 1.7vw, 1.22rem);
+        line-height: 1.62;
+      }
+
+      p:last-child {
+        margin-bottom: 0;
+      }
+
+      a {
+        color: var(--gold);
+        text-decoration-color: rgba(247, 201, 72, 0.36);
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.18em;
+        transition:
+          background 160ms ease,
+          color 160ms ease,
+          text-decoration-color 160ms ease;
+      }
+
+      a:hover,
+      a:focus-visible {
+        background: var(--gold);
+        color: #120d04;
+        outline: none;
+        text-decoration-color: transparent;
+      }
+
+      .links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.85rem 1rem;
+        margin: 2rem 0 0;
+      }
+
+      .links a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 2rem;
+      }
+
+      .status {
+        display: grid;
+        gap: 0.45rem;
+        margin-top: 2.6rem;
+        color: var(--muted);
+      }
+
+      .status-line {
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        gap: 0.65rem;
+        flex-wrap: wrap;
+      }
+
+      .pulse {
+        width: 0.55rem;
+        height: 0.55rem;
+        border-radius: 50%;
+        background: var(--gold);
+        box-shadow: 0 0 24px rgba(247, 201, 72, 0.86);
+        animation: pulse 1.8s ease-in-out infinite;
+      }
+
+      .signal {
+        display: inline;
+        max-width: 100%;
+        background: linear-gradient(90deg, var(--text) 0 38%, #ffe58a 48%, var(--text) 58% 100%);
+        background-size: 240% 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: scan 3.2s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        50% {
+          opacity: 0.42;
+          transform: scale(0.72);
+        }
+      }
+
+      @keyframes scan {
+        50%,
+        100% {
+          background-position: -140% 0;
+        }
+      }
+
+      @keyframes thread {
+        to {
+          translate: 7vw -1.2rem;
+          scale: 1.04 1;
+        }
+      }
+
+      @keyframes grain {
+        to {
+          transform: translate3d(5%, -4%, 0);
+        }
+      }
+
+      @media (max-width: 640px) {
+        .wrap {
+          width: min(100% - 2rem, 34rem);
+          padding: 5rem 0 3.5rem;
+          place-items: center start;
+        }
+
+        h1 {
+          font-size: clamp(3.25rem, 18vw, 5.8rem);
+        }
+
+        p {
+          font-size: 1rem;
+          line-height: 1.56;
+        }
+
+        .links {
+          gap: 0.6rem 0.85rem;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          animation-duration: 1ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 1ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="ribbon" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <a class="mark" href="/" aria-label="andang.dev">
+      <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+        <path d="M24 5 43 38H5L24 5Z" stroke="currentColor" stroke-width="3" />
+        <path d="M24 16 32 32H16L24 16Z" fill="currentColor" />
+      </svg>
+    </a>
+
+    <div class="wrap">
+      <section aria-labelledby="title">
+        <header>
+          <h1 id="title">An Dang</h1>
+          <p class="role">Frontend, APIs & Product Architecture</p>
+        </header>
+
+        <main>
+          <p>
+            Staff engineer with 10 years building web and mobile products at scale.
+            I specialize in frontend architecture, web performance, and user experience.
+          </p>
+
+          <p>
+            Ex-<a href="https://sorare.com" target="_blank" rel="noopener noreferrer">Sorare</a>,
+            <a href="https://octo-gaming.com" target="_blank" rel="noopener noreferrer">Octo</a>,
+            <a href="https://izberg-marketplace.com" target="_blank" rel="noopener noreferrer">Izberg</a>.
+            I work across product systems, framework upgrades, reliability tooling,
+            AI-assisted development loops, and core growth flows.
+          </p>
+
+          <p>
+            I’m energized by this AI era: unlearning old defaults, exploring new workflows, and finding better ways to build.
+          </p>
+
+          <p>
+            Let's get in touch: <a href="mailto:hi@andang.dev">hi@andang.dev</a>
+          </p>
+
+          <nav class="links" aria-label="Contact links">
+            <a href="https://www.linkedin.com/in/an-dang" target="_blank" rel="me noopener noreferrer">LinkedIn</a>
+            <a href="https://github.com/zyzo" target="_blank" rel="me noopener noreferrer">GitHub</a>
+            <a href="https://x.com/DangHaiAn1" target="_blank" rel="me noopener noreferrer">X</a>
+            <a href="mailto:hi@andang.dev">Email</a>
+          </nav>
+
+          <div class="status" aria-label="Current status">
+            <div class="status-line">
+              <span class="pulse" aria-hidden="true"></span>
+              <span class="signal">Ho Chi Minh City</span>
+            </div>
+          </div>
+        </main>
+      </section>
+    </div>
+
+    <script>
+      const root = document.documentElement;
+      let targetX = window.innerWidth * 0.5;
+      let targetY = window.innerHeight * 0.48;
+      let currentX = targetX;
+      let currentY = targetY;
+
+      const moveSpot = (event) => {
+        const point = event.touches ? event.touches[0] : event;
+        targetX = point.clientX;
+        targetY = point.clientY;
+      };
+
+      const animateSpot = () => {
+        currentX += (targetX - currentX) * 0.08;
+        currentY += (targetY - currentY) * 0.08;
+        root.style.setProperty("--spot-x", `${currentX}px`);
+        root.style.setProperty("--spot-y", `${currentY}px`);
+        requestAnimationFrame(animateSpot);
+      };
+
+      window.addEventListener("pointermove", moveSpot, { passive: true });
+      window.addEventListener("touchmove", moveSpot, { passive: true });
+      requestAnimationFrame(animateSpot);
+    </script>
+  </body>
+</html>
